@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Mood Tracker</title>
+  <style>
+    *{
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    body{
+      background: #f1f3f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .app{
+      background: #fff;
+      width: 360px;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+    h2{
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .moods{
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+    }
+    .mood{
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 8px;
+      width: 90px;
+      border: 2px solid transparent;
+    }
+    .mood:hover{
+      background: #f1f3f6;
+    }
+    .active{
+      border-color: #2874f0;
+      background: #e7f0ff;
+    }
+    .emoji{
+      font-size: 32px;
+    }
+    button{
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: #2874f0;
+      color: #fff;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    button:hover{
+      background: #0b5ed7;
+    }
+    .history{
+      margin-top: 20px;
+      text-align: left;
+    }
+    .history h4{
+      margin-bottom: 10px;
+    }
+    .history li{
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <h2>Daily Mood Tracker</h2>
+
+  <div class="moods">
+    <div class="mood" onclick="selectMood('Happy', this)">
+      <div class="emoji">😊</div>
+      <div>Happy</div>
+    </div>
+    <div class="mood" onclick="selectMood('Neutral', this)">
+      <div class="emoji">😐</div>
+      <div>Neutral</div>
+    </div>
+    <div class="mood" onclick="selectMood('Sad', this)">
+      <div class="emoji">😢</div>
+      <div>Sad</div>
+    </div>
+  </div>
+
+  <button onclick="saveMood()">Save Mood</button>
+
+  <div class="history">
+    <h4>Mood History</h4>
+    <ul id="historyList"></ul>
+  </div>
+</div>
+
+<script>
+  let selectedMood = '';
+  let moods = JSON.parse(localStorage.getItem('moods')) || [];
+
+  function selectMood(mood, element){
+    selectedMood = mood;
+    document.querySelectorAll('.mood').forEach(m => m.classList.remove('active'));
+    element.classList.add('active');
+  }
+
+  function saveMood(){
+    if(selectedMood === ''){
+      alert('Please select a mood');
+      return;
+    }
+    let date = new Date().toLocaleDateString();
+    moods.push({ date, mood: selectedMood });
+    localStorage.setItem('moods', JSON.stringify(moods));
+    displayHistory();
+  }
+
+  function displayHistory(){
+    let list = document.getElementById('historyList');
+    list.innerHTML = '';
+    moods.slice().reverse().forEach(item => {
+      list.innerHTML += `<li>${item.date} - ${item.mood}</li>`;
+    });
+  }
+
+  displayHistory();
+</script>
+
+</body>
+</html>
